@@ -58,10 +58,15 @@ pl_PL:
         event:
           expired: "Wygasły"
           status:
+            standalone:
+              title: "Samodzielne"
+              description: "Do wydarzenia samodzielnego nie można dołączyć."
             public:
               title: "Publiczne"
+              description: "Do publicznego wydarzenia może dołączyć każdy."
             private:
               title: "Prywatne"
+              description: "Do prywatnego wydarzenia mogą dołączyć tylko zaproszeni użytkownicy."
       event_ui:
         show_all: "Pokaż wszystkie"
         participants:
@@ -83,11 +88,21 @@ pl_PL:
       builder_modal:
         custom_fields:
           placeholder: "Opcjonalnie"
+        create_event_title: "Utwórz Wydarzenie"
+        update_event_title: "Edytuj Wydarzenie"
+        confirm_delete: "Czy na pewno usunąć to wydarzenie?"
+        confirm_close: "Czy na pewno chcesz zamknąć to wydarzenie?"
         create: "Utwórz"
         update: "Zapisz"
+        attach: "Utwórz wydarzenie"
+        add_reminder: "Dodaj przypomnienie"
         timezone:
           label: Strefa czasowa
         reminders:
+          label: "Przypomnienia"
+          types:
+            bump_topic: "automatycznie podbij temat"
+            notification: "powiadom uczestników"
           units:
             minutes: "minut"
             hours: "godzin"
