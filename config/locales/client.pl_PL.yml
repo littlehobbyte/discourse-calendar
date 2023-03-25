@@ -9,21 +9,52 @@ pl_PL:
     discourse_automation:
       triggerables:
         event_started:
+          title: Zdarzenie rozpoczęte
           fields:
             topic_id:
               label: ID tematu
     discourse_calendar:
+      on_holiday: "Święto"
       disable_holiday: "Wyłącz"
       enable_holiday: "Włącz"
       date: "Data"
+      holiday: "Święto"
+      holidays:
+        header_title: "Święta"
+        pick_region_description: "Wybierz region, aby zobaczyć święta dla tego regionu."
+        disabled_holidays_description: "Zdeaktywowane święta będą wyłączone z kalendarza personelu."
+      add_to_calendar: "Dodaj do Kalendarza Google"
       region:
         none: "Brak"
     group_timezones:
       search: "Wyszukiwanie..."
+      group_availability: "%{group} dostępność"
     discourse_post_event:
       notifications:
+        invite_user_predefined_attendance_notification: "%{username} automatycznie ustawił Twoją obecność i zaprosił Cię do"
+        before_event_reminder: "Wydarzenie ma właśnie się rozpocząć"
+        after_event_reminder: "Wydarzenie się zakończyło"
+        ongoing_event_reminder: "Wydarzenie jest w trakcie"
         invite_user_notification: "%{username} %{description}"
+        invite_user_predefined_attendance_notification_html: "%{username} automatycznie ustawił Twoją obecność i zaprosił Cię do %{description}"
+        before_event_reminder_html: "Wydarzenie ma właśnie się rozpocząć %{description}"
+        after_event_reminder_html: "Wydarzenie się zakończyło %{description}"
+        ongoing_event_reminder_html: "Wydarzenie jest w trakcie  %{description}"
+      preview:
+        more_than_one_event: "Nie możesz mieć więcej niż jednego wydarzenia."
+      edit_reason: "Wydarzenie zostało zaktualizowane"
+      topic_title:
+        starts_at: "Wydarzenie rozpocznie się: %{date}"
+        ended_at: "Wydarzenie zakończone: %{date}"
+        ends_in_duration: "Kończy się %{duration}"
       models:
+        invitee:
+          no_users: "Nie ma użytkowników tego typu."
+          status:
+            unknown: "Nie zainteresowany"
+            going: "Będę"
+            not_going: "Nie będę"
+            interested: "Zainteresowany"
         event:
           expired: "Wygasły"
           status:
