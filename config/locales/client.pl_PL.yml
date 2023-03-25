@@ -54,7 +54,7 @@ pl_PL:
             unknown: "Nie zainteresowany"
             going: "Będę"
             not_going: "Nie będę"
-            interested: "Zainteresowany"
+            interested: "Może będę"
         event:
           expired: "Wygasły"
           status:
@@ -64,7 +64,15 @@ pl_PL:
               title: "Prywatne"
       event_ui:
         show_all: "Pokaż wszystkie"
+        participants:
+          one: "%{count} użytkownik uczestniczył."
+          other: "%{count} użytkowników uczestniczyło."
+        invite: "Powiadom użytkownika"
         add_to_calendar: "Dodaj do kalendarza"
+        send_pm_to_creator: "Wyślij PM do %{username}"
+        leave: "Opuść wydarzenie"
+        edit_event: "Edytuj wydarzenie"
+        export_event: "Eksportuj wydarzenie"
         created_by: "Utworzony przez"
         bulk_invite: "Zaproszenie zbiorcze"
       bulk_invite_modal:
@@ -91,12 +99,33 @@ pl_PL:
           label: "Powtarzanie"
           none: "Brak powtarzania"
           every_day: "Codziennie"
+          every_month: "Co miesiąc tego dnia"
+          every_weekday: "Każdego dnia tygodnia"
+          every_week: "Co tydzień tego dnia"
+          every_two_weeks: "Co dwa tygodnie tego dnia"
+        minimal:
+          label: "Minimalne wydarzenie"
+          checkbox_label: "Ukryj przyciski Będę/Nie będę i statusy zaproszonych"
         url:
           label: "URL"
           placeholder: "Opcjonalnie"
+        name:
+          label: "Nazwa wydarzeznia"
+          placeholder: "Opcjonalne, domyślnie tytuł"
+        invitees:
+          label: "Invited groups"
         status:
           label: "Status"
       invite_user_or_group:
+        title: "Powiadom użytkowników lub grupy"
         invite: "Wyślij"
       upcoming_events:
+        title: "Nadchodzące wydarzenia"
+        creator: "Twórca"
         status: "Status"
+        starts_at: "Zaczyna się"
+    category:
+      sort_topics_by_event_start_date: "Sortuj tematy według daty startu wydarzenia."
+      disable_topic_resorting: "Wyłącz przesortowywanie tematów."
+      settings_sections:
+        event_sorting: "Sortowanie wydarzeń"
