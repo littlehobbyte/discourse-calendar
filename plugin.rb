@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 # name: discourse-calendar
-# about: Display a calendar in the first post of a topic
+# about: Adds the ability to create a dynamic calendar with events in a topic.
+# meta_topic_id: 97376
 # version: 0.3
 # author: Daniel Waterworth, Joffrey Jaffeux
 # url: https://github.com/discourse/discourse-calendar
-# transpile_js: true
 
 libdir = File.join(File.dirname(__FILE__), "vendor/holidays/lib")
 $LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
@@ -33,6 +33,7 @@ register_asset "stylesheets/mobile/discourse-post-event.scss", :mobile
 register_asset "stylesheets/desktop/discourse-calendar.scss", :desktop
 register_asset "stylesheets/colors.scss", :color_definitions
 register_asset "stylesheets/common/user-preferences.scss"
+register_asset "stylesheets/common/upcoming-events-list.scss"
 register_svg_icon "fas fa-calendar-day"
 register_svg_icon "fas fa-clock"
 register_svg_icon "fas fa-file-csv"
@@ -80,8 +81,14 @@ after_initialize do
   reloadable_patch do
     Category.register_custom_field_type("sort_topics_by_event_start_date", :boolean)
     Category.register_custom_field_type("disable_topic_resorting", :boolean)
-    Site.preloaded_category_custom_fields << "sort_topics_by_event_start_date"
-    Site.preloaded_category_custom_fields << "disable_topic_resorting"
+    if respond_to?(:register_preloaded_category_custom_fields)
+      register_preloaded_category_custom_fields("sort_topics_by_event_start_date")
+      register_preloaded_category_custom_fields("disable_topic_resorting")
+    else
+      # TODO: Drop the if-statement and this if-branch in Discourse v3.2
+      Site.preloaded_category_custom_fields << "sort_topics_by_event_start_date"
+      Site.preloaded_category_custom_fields << "disable_topic_resorting"
+    end
   end
 
   add_to_serializer :basic_category, :sort_topics_by_event_start_date do
@@ -186,13 +193,13 @@ after_initialize do
     end
   end
 
-  add_to_serializer(:post, :event) do
-    DiscoursePostEvent::EventSerializer.new(object.event, scope: scope, root: false)
-  end
-
-  add_to_serializer(:post, :include_event?) do
-    SiteSetting.discourse_post_event_enabled && !object.nil? && !object.deleted_at.present?
-  end
+  add_to_serializer(
+    :post,
+    :event,
+    include_condition: -> do
+      SiteSetting.discourse_post_event_enabled && !object.nil? && !object.deleted_at.present?
+    end,
+  ) { DiscoursePostEvent::EventSerializer.new(object.event, scope: scope, root: false) }
 
   on(:post_created) { |post| DiscoursePostEvent::Event.update_from_raw(post) }
 
@@ -210,49 +217,53 @@ after_initialize do
 
   add_preloaded_topic_list_custom_field DiscoursePostEvent::TOPIC_POST_EVENT_STARTS_AT
 
-  add_to_serializer(:topic_view, :event_starts_at, false) do
-    object.topic.custom_fields[DiscoursePostEvent::TOPIC_POST_EVENT_STARTS_AT]
-  end
-
-  add_to_serializer(:topic_view, "include_event_starts_at?") do
-    SiteSetting.discourse_post_event_enabled &&
-      SiteSetting.display_post_event_date_on_topic_title &&
-      object.topic.custom_fields.keys.include?(DiscoursePostEvent::TOPIC_POST_EVENT_STARTS_AT)
-  end
+  add_to_serializer(
+    :topic_view,
+    :event_starts_at,
+    include_condition: -> do
+      SiteSetting.discourse_post_event_enabled &&
+        SiteSetting.display_post_event_date_on_topic_title &&
+        object.topic.custom_fields.keys.include?(DiscoursePostEvent::TOPIC_POST_EVENT_STARTS_AT)
+    end,
+  ) { object.topic.custom_fields[DiscoursePostEvent::TOPIC_POST_EVENT_STARTS_AT] }
 
   add_to_class(:topic, :event_starts_at) do
     @event_starts_at ||= custom_fields[DiscoursePostEvent::TOPIC_POST_EVENT_STARTS_AT]
   end
 
-  add_to_serializer(:topic_list_item, :event_starts_at, false) { object.event_starts_at }
-
-  add_to_serializer(:topic_list_item, "include_event_starts_at?") do
-    SiteSetting.discourse_post_event_enabled &&
-      SiteSetting.display_post_event_date_on_topic_title && object.event_starts_at
-  end
+  add_to_serializer(
+    :topic_list_item,
+    :event_starts_at,
+    include_condition: -> do
+      SiteSetting.discourse_post_event_enabled &&
+        SiteSetting.display_post_event_date_on_topic_title && object.event_starts_at
+    end,
+  ) { object.event_starts_at }
 
   add_preloaded_topic_list_custom_field DiscoursePostEvent::TOPIC_POST_EVENT_ENDS_AT
 
-  add_to_serializer(:topic_view, :event_ends_at, false) do
-    object.topic.custom_fields[DiscoursePostEvent::TOPIC_POST_EVENT_ENDS_AT]
-  end
-
-  add_to_serializer(:topic_view, "include_event_ends_at?") do
-    SiteSetting.discourse_post_event_enabled &&
-      SiteSetting.display_post_event_date_on_topic_title &&
-      object.topic.custom_fields.keys.include?(DiscoursePostEvent::TOPIC_POST_EVENT_ENDS_AT)
-  end
+  add_to_serializer(
+    :topic_view,
+    :event_ends_at,
+    include_condition: -> do
+      SiteSetting.discourse_post_event_enabled &&
+        SiteSetting.display_post_event_date_on_topic_title &&
+        object.topic.custom_fields.keys.include?(DiscoursePostEvent::TOPIC_POST_EVENT_ENDS_AT)
+    end,
+  ) { object.topic.custom_fields[DiscoursePostEvent::TOPIC_POST_EVENT_ENDS_AT] }
 
   add_to_class(:topic, :event_ends_at) do
     @event_ends_at ||= custom_fields[DiscoursePostEvent::TOPIC_POST_EVENT_ENDS_AT]
   end
 
-  add_to_serializer(:topic_list_item, :event_ends_at, false) { object.event_ends_at }
-
-  add_to_serializer(:topic_list_item, "include_event_ends_at?") do
-    SiteSetting.discourse_post_event_enabled &&
-      SiteSetting.display_post_event_date_on_topic_title && object.event_ends_at
-  end
+  add_to_serializer(
+    :topic_list_item,
+    :event_ends_at,
+    include_condition: -> do
+      SiteSetting.discourse_post_event_enabled &&
+        SiteSetting.display_post_event_date_on_topic_title && object.event_ends_at
+    end,
+  ) { object.event_ends_at }
 
   # DISCOURSE CALENDAR
 
@@ -337,7 +348,7 @@ after_initialize do
     end
   end
 
-  add_to_serializer(:post, :calendar_details) do
+  add_to_serializer(:post, :calendar_details, include_condition: -> { object.is_first_post? }) do
     grouped = {}
     standalones = []
 
@@ -360,30 +371,35 @@ after_initialize do
         else
           identifier = "#{event.region.split("_").first}-#{event.start_date.strftime("%j")}"
 
-          grouped[identifier] ||= {
-            type: :grouped,
-            from: event.start_date,
-            name: [],
-            usernames: [],
-          }
+          grouped[identifier] ||= { type: :grouped, from: event.start_date, name: [], users: [] }
+
+          user = User.find_by_username(event.username)
 
           grouped[identifier][:name] << event.description
-          grouped[identifier][:usernames] << event.username
+          grouped[identifier][:users] << {
+            username: event.username,
+            timezone: user.present? ? user.user_option.timezone : nil,
+          }
         end
       end
 
     grouped.each do |_, v|
       v[:name].sort!.uniq!
       v[:name] = v[:name].join(", ")
-      v[:usernames].sort!.uniq!
+      v[:users].sort! { |a, b| a[:username] <=> b[:username] }
+      v[:users].uniq! { |u| u[:username] }
     end
 
     standalones + grouped.values
   end
 
-  add_to_serializer(:post, :include_calendar_details?) { object.is_first_post? }
-
-  add_to_serializer(:post, :group_timezones) do
+  add_to_serializer(
+    :post,
+    :group_timezones,
+    include_condition: -> do
+      post_custom_fields[DiscourseCalendar::GROUP_TIMEZONES_CUSTOM_FIELD].present?
+    end,
+  ) do
     result = {}
     group_timezones = post_custom_fields[DiscourseCalendar::GROUP_TIMEZONES_CUSTOM_FIELD] || {}
     group_names = group_timezones["groups"] || []
@@ -404,13 +420,9 @@ after_initialize do
     result
   end
 
-  add_to_serializer(:post, :include_group_timezones?) do
-    post_custom_fields[DiscourseCalendar::GROUP_TIMEZONES_CUSTOM_FIELD].present?
+  add_to_serializer(:site, :users_on_holiday, include_condition: -> { scope.is_staff? }) do
+    DiscourseCalendar.users_on_holiday
   end
-
-  add_to_serializer(:site, :users_on_holiday) { DiscourseCalendar.users_on_holiday }
-
-  add_to_serializer(:site, :include_users_on_holiday?) { scope.is_staff? }
 
   on(:reduce_cooked) do |fragment, post|
     if SiteSetting.discourse_post_event_enabled
@@ -425,8 +437,8 @@ after_initialize do
           event_name = event_node["data-name"] || post.topic.title
           event_node.replace <<~TXT
           <div style='border:1px solid #dedede'>
-            <p><a href="#{Discourse.base_url}#{post.url}">#{event_name}</a></p>
-            <p>#{dates}</p>
+            <p><a href="#{Discourse.base_url}#{post.url}">#{CGI.escape_html(event_name)}</a></p>
+            <p>#{CGI.escape_html(dates)}</p>
           </div>
         TXT
         end

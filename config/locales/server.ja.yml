@@ -34,7 +34,6 @@ ja:
         ```
   site_settings:
     calendar_enabled: "discourse-calendar プラグインを有効にします。これにより、トピックの最初の投稿に [calendar][/calendar] タグのサポートが追加されます。"
-    discourse_post_event_enabled: "[experimental] イベントを投稿に添付できるようにします。注意: `calendar enabled` も有効である必要があります。"
     displayed_invitees_limit: "イベントに表示される招待者数を制限します。"
     display_post_event_date_on_topic_title: "トピックタイトルの後にイベントの日付を表示します。"
     use_local_event_date: "トピックタイトルの後に、相対時間ではなく、現地の日付を使用します。"
@@ -42,6 +41,7 @@ ja:
     discourse_post_event_allowed_custom_fields: "各イベントにカスタムフィールドの値を設定できるようにします。"
     discourse_post_event_edit_notifications_time_extension: "`going` 参加者が元の投稿の編集に関する通知を受け取り続けるイベント終了後の期間を延長（分単位）します。"
     holiday_calendar_topic_id: "スタッフの休暇/不在カレンダーのトピック ID。"
+    holiday_status_emoji: 休暇ステータスに使用される絵文字を定義します。
     delete_expired_event_posts_after: "期限切れのイベントのある投稿は、（n）時間後に自動的に削除されます。削除を無効にするには、-1 に設定します。"
     all_day_event_start_time: "開始時刻が指定されていないイベントはこの時刻に開始します。フォーマットは HH:mm です。午前 6 時の場合は、06:00 と入力します"
     all_day_event_end_time: "終了時刻が指定されていないイベントはこの時刻に終了します。フォーマットは HH:mm です。午後 6 時の場合は、18:00 と入力します"
@@ -55,6 +55,7 @@ ja:
     events_calendar_categories: "カテゴリの上にイベントカレンダーを表示します。"
     sort_categories_by_event_start_date_enabled: "イベント開始日順によるカテゴリトピックの並べ替えを有効にします。"
     disable_resorting_on_categories_enabled: "ユーザーがイベントカテゴリで並べ替える機能をカテゴリで無効にできるようにします。"
+    calendar_automatic_holidays_enabled: "ユーザーの地域に基づいて休暇ステータスを自動的に設定します (注意: 特定の自動休暇はプラグインの設定で無効にできます)"
   discourse_calendar:
     invite_user_notification: "%{username} があなたを招待しました: %{description}"
     calendar_must_be_in_first_post: "Calendar タグは、トピックの最初の投稿でのみ使用できます。"
@@ -63,6 +64,9 @@ ja:
     event_expired: "イベント終了"
     holiday_status:
       description: "休暇中"
+  discourse_push_notifications:
+    popup:
+      event_reminder: "イベントのリマインダー"
   discourse_post_event:
     notifications:
       before_event_reminder: "%{title} は間もなく開始します。"
@@ -81,10 +85,11 @@ ja:
           ends_at_before_starts_at: "イベントを開始時刻より前に終了されることはできません。"
           start_must_be_present_and_a_valid_date: "イベントには有効な開始日が必要です。"
           end_must_be_a_valid_date: "終了日は有効な日付である必要があります。"
-          invalid_recurrence: "繰り返しは、every_month、every_week、every_two_weeks、every_day、every_weekday のいずれかである必要があります。"
           invalid_timezone: "タイムゾーンが認識されません。"
           acting_user_not_allowed_to_create_event: "現在のユーザーは、イベントを作成できません。"
           acting_user_not_allowed_to_act_on_this_event: "現在のユーザーはこのイベントにアクションを実行することはできません。"
+          invalid_allowed_groups: "許可されたグループは無効です。"
+          acting_user_not_allowed_to_invite_these_groups: "現在のユーザーはこれらのグループを招待できません。"
           custom_field_is_invalid: "カスタムフィールド `%{field}` は許可されていません。"
           name:
             length: "イベント名の長さは、%{minimum}～%{maximum} 文字である必要があります。"

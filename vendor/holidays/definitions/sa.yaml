@@ -6,6 +6,22 @@ months:
   - name: Foundation Day
     regions: [sa]
     mday: 22
+  4:
+  - name: Festival of Breaking the Fast
+    regions: [sa]
+    mday: 21
+    year_ranges:
+      limited: [2023]
+  - name: Second Day of the Festival of Breaking the Fast
+    regions: [sa]
+    mday: 22
+    year_ranges:
+      limited: [2023]
+  - name: Third Day of the Festival of Breaking the Fast
+    regions: [sa]
+    mday: 23
+    year_ranges:
+      limited: [2023]
   5:
   - name: Festival of Breaking the Fast
     regions: [sa]
@@ -22,27 +38,28 @@ months:
     mday: 4
     year_ranges:
       limited: [2022]
-  7:
+  6:
   - name: Day of Arafah
     regions: [sa]
-    mday: 19
+    mday: 27
     year_ranges:
-      limited: [2021]
+      limited: [2023]
   - name: Day 1 of Eid Al Adha
     regions: [sa]
-    mday: 20
+    mday: 28
     year_ranges:
-      limited: [2021]
+      limited: [2023]
   - name: Day 2 of Eid Al Adha
     regions: [sa]
-    mday: 21
+    mday: 29
     year_ranges:
-      limited: [2021]
+      limited: [2023]
   - name: Day 3 of Eid Al Adha
     regions: [sa]
-    mday: 22
+    mday: 30
     year_ranges:
-      limited: [2021]
+      limited: [2023]
+  7:
   - name: Day of Arafah
     regions: [sa]
     mday: 8

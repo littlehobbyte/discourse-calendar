@@ -197,6 +197,7 @@ ru:
           it: "Италия"
           je: "Джерси"
           jp: "Япония"
+          ke: "Кения"
           kr: "Республика Корея"
           kz: "Республика Казахстан"
           li: "Лихтенштейн"
@@ -303,6 +304,11 @@ ru:
           ve: "Венесуэла"
           vi: "Виргинские острова (США)"
           za: "Южная Африка"
+      toolbar_button:
+        today: "Сегодня"
+        month: "За месяц"
+        week: "За неделю"
+        day: "Дата"
     group_timezones:
       search: "Поиск..."
       group_availability: "доступность %{group}"
@@ -437,6 +443,8 @@ ru:
         creator: "Создатель"
         status: "Статус"
         starts_at: "Начинается в"
+      upcoming_events_list:
+        title: "Предстоящие мероприятия"
     category:
       sort_topics_by_event_start_date: "Сортировать темы по дате начала мероприятия."
       disable_topic_resorting: "Отключить сортировку тем."

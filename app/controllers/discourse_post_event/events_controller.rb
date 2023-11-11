@@ -17,7 +17,7 @@ module DiscoursePostEvent
       event = Event.find(params[:id])
       guardian.ensure_can_act_on_discourse_post_event!(event)
       invites = Array(params.permit(invites: [])[:invites])
-      users = Invitee.extract_uniq_usernames(invites)
+      users = User.real.where(username: invites)
 
       users.each { |user| event.create_notification!(user, event.post) }
 
@@ -110,7 +110,7 @@ module DiscoursePostEvent
     private
 
     def filtered_events_params
-      params.permit(:post_id, :category_id)
+      params.permit(:post_id, :category_id, :include_subcategories)
     end
   end
 end

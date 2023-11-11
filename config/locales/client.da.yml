@@ -282,6 +282,11 @@ da:
           ve: "Venezuela"
           vi: "Jomfruøerne (USA)"
           za: "Sydafrika"
+      toolbar_button:
+        today: "I dag"
+        month: "Måned"
+        week: "Uge"
+        day: "Dag"
     group_timezones:
       search: "Søg..."
       group_availability: "%{group} tilgængelighed"
@@ -400,3 +405,5 @@ da:
         creator: "Skaber"
         status: "Status"
         starts_at: "Begynder"
+      upcoming_events_list:
+        title: "Kommende begivenheder"

@@ -1,19 +1,19 @@
-import I18n from "I18n";
-import TextLib, { emojiUnescape } from "discourse/lib/text";
-import { exportEntity } from "discourse/lib/export-csv";
-import cleanTitle from "discourse/plugins/discourse-calendar/lib/clean-title";
-import { dasherize } from "@ember/string";
 import EmberObject from "@ember/object";
+import { routeAction } from "discourse/helpers/route-action";
+import { exportEntity } from "discourse/lib/export-csv";
 import showModal from "discourse/lib/show-modal";
+import { cook, emojiUnescape } from "discourse/lib/text";
+import { escapeExpression } from "discourse/lib/utilities";
 import hbs from "discourse/widgets/hbs-compiler";
 import { createWidget } from "discourse/widgets/widget";
-import { routeAction } from "discourse/helpers/route-action";
-import { buildParams, replaceRaw } from "../../lib/raw-event-helper";
-import { escapeExpression } from "discourse/lib/utilities";
+import I18n from "I18n";
+import PostEventInvitees from "../components/modal/post-event-invitees";
+import cleanTitle from "../lib/clean-title";
+import { buildParams, replaceRaw } from "../lib/raw-event-helper";
 
 export default createWidget("discourse-post-event", {
   tagName: "div.discourse-post-event-widget",
-  services: ["dialog"],
+  services: ["dialog", "store", "modal", "currentUser", "siteSettings"],
 
   buildKey: (attrs) => `discourse-post-event-${attrs.id}`,
 
@@ -32,20 +32,17 @@ export default createWidget("discourse-post-event", {
   },
 
   showAllInvitees(params) {
-    const postId = params.postId;
-    const title = params.title || "title_invited";
-    const extraClass = params.extraClass || "invited";
-    const name = "discourse-post-event-invitees";
-
-    this.store.find("discourse-post-event-event", postId).then((eventModel) => {
-      showModal(name, {
-        model: eventModel,
-        title: `discourse_post_event.invitees_modal.${title}`,
-        modalClass: [`${dasherize(name).toLowerCase()}-modal`, extraClass].join(
-          " "
-        ),
+    this.store
+      .find("discourse-post-event-event", params.postId)
+      .then((eventModel) => {
+        this.modal.show(PostEventInvitees, {
+          model: {
+            event: eventModel,
+            title: params.title,
+            extraClass: params.extraClass,
+          },
+        });
       });
-    });
   },
 
   editPostEvent(postId) {
@@ -79,7 +76,7 @@ export default createWidget("discourse-post-event", {
               edit_reason: I18n.t("discourse_post_event.edit_reason"),
             };
 
-            return TextLib.cookAsync(newRaw).then((cooked) => {
+            return cook(newRaw).then((cooked) => {
               props.cooked = cooked.string;
               return post.save(props);
             });

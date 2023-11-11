@@ -1,6 +1,7 @@
-import { acceptance, exists } from "discourse/tests/helpers/qunit-helpers";
-import { test } from "qunit";
 import { visit } from "@ember/test-helpers";
+import { test } from "qunit";
+import { acceptance, queryAll } from "discourse/tests/helpers/qunit-helpers";
+import I18n from "discourse-i18n";
 
 acceptance("Discourse Calendar - Category Events Calendar", function (needs) {
   needs.user();
@@ -70,10 +71,23 @@ acceptance("Discourse Calendar - Category Events Calendar", function (needs) {
   test("shows event calendar on category page", async (assert) => {
     await visit("/c/bug/1");
 
-    assert.ok(
-      exists("#category-events-calendar"),
-      "Events calendar div exists."
+    assert
+      .dom("#category-events-calendar")
+      .exists("Events calendar div exists.");
+    assert.dom(".fc-view-container").exists("FullCalendar is loaded.");
+  });
+
+  test("uses current locale to display calendar weekday names", async (assert) => {
+    I18n.locale = "pt_BR";
+
+    await visit("/c/bug/1");
+
+    assert.deepEqual(
+      [...queryAll(".fc-day-header span")].map((el) => el.innerText),
+      ["dom.", "seg.", "ter.", "qua.", "qui.", "sex.", "sáb."],
+      "Week days are translated in the calendar header"
     );
-    assert.ok(exists(".fc-view-container"), "FullCalendar is loaded.");
+
+    I18n.locale = "en";
   });
 });

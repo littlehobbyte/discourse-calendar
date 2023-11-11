@@ -34,7 +34,6 @@ zh_CN:
         ```
   site_settings:
     calendar_enabled: "启用 discourse-calendar 插件。这将在话题的第一个帖子中添加对 [calendar][/calendar] 标签的支持。"
-    discourse_post_event_enabled: "[experimental] 允许将活动附加到帖子。注意：还需要启用 `calendar enabled`。"
     displayed_invitees_limit: "限制活动中显示的受邀者数量。"
     display_post_event_date_on_topic_title: "在话题标题之后显示活动日期。"
     use_local_event_date: "在话题标题后使用本地日期而不是相对时间。"
@@ -42,6 +41,7 @@ zh_CN:
     discourse_post_event_allowed_custom_fields: "允许让每个活动设置自定义字段的值。"
     discourse_post_event_edit_notifications_time_extension: "活动结束后延长一段时间（以分钟为单位），让“参加”的受邀者仍可以收到原始帖子的编辑通知。"
     holiday_calendar_topic_id: "管理人员假期/缺勤日历的话题 ID。"
+    holiday_status_emoji: 给节日状态设置表情图片。
     delete_expired_event_posts_after: "包含过期活动的帖子将在 (n) 小时后自动删除。设置为 -1 将禁用删除。"
     all_day_event_start_time: "未指定开始时间的活动将在此时间开始。格式为 HH:mm。如为上午 6:00，输入 06:00"
     all_day_event_end_time: "未指定结束时间的活动将在此时间结束。格式为 HH:mm。如为下午 6:00，输入 18:00"
@@ -55,6 +55,7 @@ zh_CN:
     events_calendar_categories: "在类别顶部显示活动日历。"
     sort_categories_by_event_start_date_enabled: "启用按活动开始日期对类别话题进行排序。"
     disable_resorting_on_categories_enabled: "允许类别禁用用户对活动类别进行排序的功能。"
+    calendar_automatic_holidays_enabled: "根据用户所在区域自动设置假期状态（注意：您可以在插件设置中禁用特定的自动假期）"
   discourse_calendar:
     invite_user_notification: "%{username} 邀请您加入：%{description}"
     calendar_must_be_in_first_post: "日历标签仅可用于话题的第一个帖子。"
@@ -63,6 +64,9 @@ zh_CN:
     event_expired: "活动已过期"
     holiday_status:
       description: "休假"
+  discourse_push_notifications:
+    popup:
+      event_reminder: "活动提醒"
   discourse_post_event:
     notifications:
       before_event_reminder: "%{title} 即将开始。"
@@ -81,10 +85,11 @@ zh_CN:
           ends_at_before_starts_at: "活动不能在开始之前结束。"
           start_must_be_present_and_a_valid_date: "活动需要有效的开始日期。"
           end_must_be_a_valid_date: "结束日期必须是有效日期。"
-          invalid_recurrence: "重复必须是以下之一：every_month、every_week、every_two_weeks、every_day、every_weekday。"
           invalid_timezone: "无法识别时区。"
           acting_user_not_allowed_to_create_event: "当前用户不能创建活动。"
           acting_user_not_allowed_to_act_on_this_event: "当前用户不能在此活动上操作。"
+          invalid_allowed_groups: "允许的群组无效。"
+          acting_user_not_allowed_to_invite_these_groups: "当前用户不能邀请这些群组。"
           custom_field_is_invalid: "不允许自定义字段 `%{field}`。"
           name:
             length: "活动名称长度必须介于 %{minimum} 和 %{maximum} 个字符之间。"

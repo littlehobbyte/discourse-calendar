@@ -1,10 +1,10 @@
-import { Promise } from "rsvp";
-import { isNotFullDayEvent } from "discourse/plugins/discourse-calendar/lib/guess-best-date-format";
-import { formatEventName } from "discourse/plugins/discourse-calendar/helpers/format-event-name";
-import loadScript from "discourse/lib/load-script";
 import Component from "@ember/component";
 import { schedule } from "@ember/runloop";
+import { Promise } from "rsvp";
+import loadScript from "discourse/lib/load-script";
 import getURL from "discourse-common/lib/get-url";
+import { formatEventName } from "../helpers/format-event-name";
+import { isNotFullDayEvent } from "../lib/guess-best-date-format";
 
 export default Component.extend({
   tagName: "",
@@ -41,13 +41,16 @@ export default Component.extend({
       this._calendar = new window.FullCalendar.Calendar(calendarNode, {});
 
       (this.events || []).forEach((event) => {
-        const { starts_at, ends_at, post } = event;
+        const { starts_at, ends_at, post, category_id } = event;
+        const categoryColor = this.site.categoriesById[category_id]?.color;
+        const backgroundColor = categoryColor ? `#${categoryColor}` : undefined;
         this._calendar.addEvent({
           title: formatEventName(event),
           start: starts_at,
           end: ends_at || starts_at,
           allDay: !isNotFullDayEvent(moment(starts_at), moment(ends_at)),
           url: getURL(`/t/-/${post.topic.id}/${post.post_number}`),
+          backgroundColor,
         });
       });
 
